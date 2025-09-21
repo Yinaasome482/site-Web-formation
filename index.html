@@ -11,34 +11,78 @@
     .container{max-width:1100px;margin:0 auto;padding:20px;}
     nav{display:flex;justify-content:space-between;align-items:center;}
     nav ul{display:flex;gap:20px;}
-    nav ul li a{color:white;text-decoration:none;font-weight:600;}
-    .cta{background:white;color:#111827;padding:6px 12px;border-radius:6px;font-weight:600;}
+    nav ul li a{color:white;text-decoration:none;font-weight:600;cursor:pointer;transition:color 0.3s;}
+    nav ul li a:hover{color:#fbbf24;}
+    nav ul li a.active{color:#fbbf24;border-bottom:2px solid #fbbf24;}
+    .cta{background:white;color:#111827;padding:6px 12px;border-radius:6px;font-weight:600;text-decoration:none;}
 
-    /* Slider Accueil */
+    /* Slider Accueil avec overlay text */
     .slider{position:relative;overflow:hidden;border-radius:12px;}
     .slides{display:flex;transition:transform 1s ease;}
-    .slides img{width:100%;flex-shrink:0;object-fit:cover;height:400px;}
+    .slide{position:relative;width:100%;flex-shrink:0;}
+    .slides img{width:100%;object-fit:cover;height:400px;}
+    .slide-overlay{
+      position:absolute;
+      top:0;left:0;right:0;bottom:0;
+      background:linear-gradient(135deg, rgba(14,165,164,0.8), rgba(0,0,0,0.4));
+      display:flex;flex-direction:column;justify-content:center;align-items:center;
+      color:white;text-align:center;padding:20px;
+    }
+    .slide-overlay h1{font-size:2.5rem;margin-bottom:16px;font-weight:800;}
+    .slide-overlay p{font-size:1.2rem;max-width:600px;margin-bottom:20px;}
+    .slide-btn{
+      background:#fbbf24;color:#111827;padding:12px 24px;
+      border-radius:8px;font-weight:600;text-decoration:none;
+      transition:transform 0.3s;
+    }
+    .slide-btn:hover{transform:translateY(-2px);}
 
+    /* Système d'onglets */
+    .tab-content{display:none;}
+    .tab-content.active{display:block;}
+    
     section{padding:40px 0;}
-    h2{margin-bottom:16px;color:#0ea5a4;}
+    h2{margin-bottom:16px;color:#0ea5a4;font-size:2rem;}
     .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
     .grid-2{display:grid;grid-template-columns:repeat(2,1fr);gap:20px;}
+    .grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;}
 
-    .card{background:white;border-radius:12px;padding:16px;box-shadow:0 4px 12px rgba(0,0,0,0.1);}
+    .card{background:white;border-radius:12px;padding:16px;box-shadow:0 4px 12px rgba(0,0,0,0.1);transition:transform 0.3s;}
+    .card:hover{transform:translateY(-5px);}
     .card img{width:100%;border-radius:12px;height:180px;object-fit:cover;}
     .instructor img{width:100px;height:100px;border-radius:50%;object-fit:cover;margin-bottom:12px;}
     .testimonial{background:#f0fdfa;padding:16px;border-radius:12px;}
 
+    /* Nouvelles sections */
+    .stats{background:#0ea5a4;color:white;padding:40px 0;text-align:center;}
+    .stats .grid-4 div{padding:20px;}
+    .stats h3{font-size:2rem;margin-bottom:8px;}
+    .stats p{font-size:1.1rem;}
+
+    .pricing{background:white;border-radius:12px;padding:24px;text-align:center;border:2px solid #e5e7eb;}
+    .pricing.featured{border-color:#0ea5a4;transform:scale(1.05);}
+    .pricing h3{color:#0ea5a4;margin-bottom:16px;}
+    .pricing .price{font-size:2rem;font-weight:800;color:#111827;margin:16px 0;}
+    .pricing ul{list-style:none;margin:20px 0;}
+    .pricing ul li{padding:8px 0;border-bottom:1px solid #f3f4f6;}
+    .pricing ul li:before{content:'✓';color:#10b981;font-weight:bold;margin-right:8px;}
+
+    .contact-info{background:#f0fdfa;padding:20px;border-radius:12px;margin-top:20px;}
+    .contact-info h3{color:#0ea5a4;margin-bottom:12px;}
+
     /* Formulaire */
     form{display:grid;gap:12px;}
     input, select, textarea, button{padding:10px;border-radius:6px;border:1px solid #e5e7eb;font-size:1rem;}
-    button{background:#0ea5a4;color:white;border:none;font-weight:700;cursor:pointer;}
+    button{background:#0ea5a4;color:white;border:none;font-weight:700;cursor:pointer;transition:background 0.3s;}
+    button:hover{background:#0891b2;}
 
     /* Responsive */
     @media(max-width:900px){
-      .grid-3{grid-template-columns:1fr;}
+      .grid-3, .grid-4{grid-template-columns:1fr;}
       .grid-2{grid-template-columns:1fr;}
       nav ul{display:none;}
+      .slide-overlay h1{font-size:1.8rem;}
+      .slide-overlay p{font-size:1rem;}
     }
   </style>
 </head>
@@ -48,195 +92,415 @@
       <nav>
         <div class="logo" style="font-weight:700;font-size:1.2rem;">FORMATION PRO</div>
         <ul>
-          <li><a href="#accueil">Accueil</a></li>
-          <li><a href="#formations">Formations</a></li>
-          <li><a href="#formateurs">Formateurs</a></li>
-          <li><a href="#temoignages">Témoignages</a></li>
-          <li><a href="#inscription">Inscription</a></li>
+          <li><a href="#" onclick="showTab('accueil')" class="tab-link active">Accueil</a></li>
+          <li><a href="#" onclick="showTab('formations')" class="tab-link">Formations</a></li>
+          <li><a href="#" onclick="showTab('formateurs')" class="tab-link">Formateurs</a></li>
+          <li><a href="#" onclick="showTab('temoignages')" class="tab-link">Témoignages</a></li>
+          <li><a href="#" onclick="showTab('tarifs')" class="tab-link">Tarifs</a></li>
+          <li><a href="#" onclick="showTab('apropos')" class="tab-link">À propos</a></li>
+          <li><a href="#" onclick="showTab('inscription')" class="tab-link">Inscription</a></li>
         </ul>
-        <a class="cta" href="#inscription">S'inscrire</a>
+        <a class="cta" href="#" onclick="showTab('inscription')">S'inscrire</a>
       </nav>
     </div>
   </header>
 
-  <section id="accueil" class="container">
-    <div class="slider">
-      <div class="slides">
-        <img src="https://images.unsplash.com/photo-1557804506-669a67965ba0?q=80&w=600&auto=format&fit=crop" alt="Formation 1">
-        <img src="https://images.unsplash.com/photo-1519389950473-47ba0277781c?q=80&w=600&auto=format&fit=crop" alt="Formation 2">
-        <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=600&auto=format&fit=crop"alt="Formation 3">
-        <img src="https://images.unsplash.com/photo-1504384308090-c894fdcc538d?q=80&w=600&auto=format&fit=crop" alt="Formation 4">
-        <img src=".images/formation.jpg" alt="Formation 5">
-
+  <!-- ONGLET ACCUEIL -->
+  <div id="accueil" class="tab-content active">
+    <section class="container">
+      <div class="slider">
+        <div class="slides">
+          <div class="slide">
+            <img src="https://images.unsplash.com/photo-1557804506-669a67965ba0?q=80&w=600&auto=format&fit=crop" alt="Formation 1">
+            <div class="slide-overlay">
+              <h1>Développez vos Compétences</h1>
+              <p>Rejoignez nos formations professionnelles et donnez un nouvel élan à votre carrière avec nos experts certifiés.</p>
+              <a href="#" class="slide-btn" onclick="showTab('formations')">Découvrir nos formations</a>
+            </div>
+          </div>
+          <div class="slide">
+            <img src="https://images.unsplash.com/photo-1519389950473-47ba0277781c?q=80&w=600&auto=format&fit=crop" alt="Formation 2">
+            <div class="slide-overlay">
+              <h1>Data Science & IA</h1>
+              <p>Maîtrisez les technologies d'avenir : machine learning, analyse de données et intelligence artificielle.</p>
+              <a href="#" class="slide-btn" onclick="showTab('formations')">En savoir plus</a>
+            </div>
+          </div>
+          <div class="slide">
+            <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=600&auto=format&fit=crop" alt="Formation 3">
+            <div class="slide-overlay">
+              <h1>Développement Web</h1>
+              <p>Créez des sites web modernes et des applications performantes avec les dernières technologies.</p>
+              <a href="#" class="slide-btn" onclick="showTab('formations')">Commencer maintenant</a>
+            </div>
+          </div>
+          <div class="slide">
+            <img src="https://images.unsplash.com/photo-1504384308090-c894fdcc538d?q=80&w=600&auto=format&fit=crop" alt="Formation 4">
+            <div class="slide-overlay">
+              <h1>Marketing Digital</h1>
+              <p>Développez votre présence en ligne et maîtrisez les stratégies marketing les plus efficaces.</p>
+              <a href="#" class="slide-btn" onclick="showTab('formations')">Démarrer</a>
+            </div>
+          </div>
+        </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <section id="formations" class="container">
-  <h2 style="margin-top:40px;">Formations Disponibles</h2>
-
-  <!-- Sélecteur déroulant -->
-  <label for="typeFormation" style="font-weight:600;margin-bottom:8px;display:block;">
-    Choisir le type de formation :
-  </label>
-  <select id="typeFormation">
-    <option value="enCours">Formations en cours</option>
-    <option value="passees">Formations passées</option>
-  </select>
-
-  <!-- Conteneur des cartes de formation -->
-  <div id="formationsContainer" class="grid-3" style="margin-top:20px;">
-  <!-- Les cartes seront insérées dynamiquement via JS -->
-</div>
-
-<script>
-  const formations = {
-    enCours: [
-      {
-        titre: "Développement Web - Formation en cours",
-        desc: "Modules en direct et ateliers pratiques.",
-        tarifs: "60€",
-        img: "images/dev_en_cours.jpg"
-      },
-      {
-        titre: "Data Science - Formation en cours",
-        desc: "Projet guidé en direct avec certification.",
-        tarifs: "50€",
-        img: "images/data_en_cours.jpg"
-      }
-    ],
-    passees: [
-      {
-        titre: "Marketing Digital - Formation passée",
-        desc: "Stratégies numériques et campagnes réelles.",
-        tarifs: "45€",
-        img: "images/formation.jpg"
-      },
-      {
-        titre: "Intelligence Artificielle - Formation passée",
-        desc: "Apprentissage automatique, conception de chatbot et projets pratiques.",
-        tarifs: "55€",
-        img: "images/ia_passee.jpg"
-      },
-      {
-        titre: "Blockchain - Formation passée",
-        desc: "Introduction aux cryptomonnaies et contrats intelligents.",
-        tarifs: "50€",
-        img: "images/blockchain_passee.jpg"
-      }
-    ]
-  };
-
-  const container = document.getElementById("formationsContainer");
-  const select = document.getElementById("typeFormation");
-
-  function afficherFormations(type) {
-    container.innerHTML = "";
-    formations[type].forEach(f => {
-      const card = document.createElement("div");
-      card.className = "card";
-      card.innerHTML = `
-        <img src="${f.img}" alt="${f.titre}">
-        <h3>${f.titre}</h3>
-        <p>${f.desc}</p>
-        <p><strong>Tarif :</strong> ${f.tarifs}</p>
-      `;
-      container.appendChild(card);
-    });
-  }
-
-  // Affichage par défaut
-  afficherFormations(select.value);
-
-  // Changement du select
-  select.addEventListener("change", () => {
-    afficherFormations(select.value);
-  });
-</script>
-
-
-
-  <section id="formateurs" class="container">
-    <h2>Nos Formateurs</h2>
-    <div class="grid-3">
-      <div class="card instructor">
-        <img src=".images/some.jpg" alt="YINAA">
-        <h3>YINAA SOME</h3>
-        <p>Analyste statisticien avec 2 ans d'expérience, spécialisée en apprentissage automatique,  visualisation de données et conception de site web, chatbot.</p>
+    <section class="stats">
+      <div class="container">
+        <div class="grid-4">
+          <div>
+            <h3>500+</h3>
+            <p>Étudiants formés</p>
+          </div>
+          <div>
+            <h3>95%</h3>
+            <p>Taux de satisfaction</p>
+          </div>
+          <div>
+            <h3>15+</h3>
+            <p>Formations disponibles</p>
+          </div>
+          <div>
+            <h3>3</h3>
+            <p>Formateurs experts</p>
+          </div>
+        </div>
       </div>
-      <div class="card instructor">
-        <img src="https://images.unsplash.com/photo-1545996124-1b6a7f8d0f1b?q=80&w=600&auto=format&fit=crop" alt="Djakalika">
-        <h3>Djakalika SOMA</h3>
-        <p>Data scientist à Orange Burkina Faso avec 3 ans d'expérience. Développeur site Web, de chatbot et il est egalement expert en automatisation des taches.</p>
-      </div>
-      <div class="card instructor">
-        <img src="" alt="Alain">
-        <h3>Alain B.</h3>
-        <p>Coach carrière, accompagnement CV, entretien et insertion professionnelle.</p>
-      </div>
-    </div>
-  </section>
+    </section>
+  </div>
 
-  <section id="temoignages" class="container">
-    <h2>Témoignages</h2>
-    <div class="grid-2">
-      <div class="testimonial card">
-        <p>“Grâce à la formation Data, j'ai décroché un poste chez une startup tech. Les projets m'ont beaucoup aidé.”</p>
-        <small><strong>Awa, 27 ans</strong></small>
-      </div>
-      <div class="testimonial card">
-        <p>“Le suivi des formateurs et les ateliers pratiques sont excellents — très opérationnel.”</p>
-        <small><strong>Jean, 31 ans</strong></small>
-      </div>
-    </div>
-  </section>
-
-  <section id="inscription" class="container">
-    <h2>Inscription</h2>
-    <form>
-      <input type="text" name="nom" placeholder="Nom complet" required>
-      <input type="email" name="email" placeholder="Email" required>
-      <input type="number" name="numériques" placeholder="Numero whatsapp" required>
-      <select name="parcours" required>
-        <option value="">-- Choisir un parcours --</option>
-        <option value="data">Data Science</option>
-        <option value="dev">Développement Web</option>
-        <option value="marketing">Marketing Digital</option>
+  <!-- ONGLET FORMATIONS -->
+  <div id="formations" class="tab-content">
+    <section class="container">
+      <h2>Formations Disponibles</h2>
+      
+      <label for="typeFormation" style="font-weight:600;margin-bottom:8px;display:block;">
+        Choisir le type de formation :
+      </label>
+      <select id="typeFormation">
+        <option value="enCours">Formations en cours</option>
+        <option value="passees">Formations passées</option>
       </select>
-      <button type="submit">S'inscrire</button>
-    </form>
-  </section>
 
-  <footer class="container" style="text-align:center;padding:20px 0;">
+      <div id="formationsContainer" class="grid-3" style="margin-top:20px;">
+      </div>
+    </section>
+  </div>
+
+  <!-- ONGLET FORMATEURS -->
+  <div id="formateurs" class="tab-content">
+    <section class="container">
+      <h2>Nos Formateurs Experts</h2>
+      <div class="grid-3">
+        <div class="card instructor">
+          <img src=".images/some.jpg" alt="YINAA">
+          <h3>YINAA SOME</h3>
+          <p><strong>Spécialités :</strong> Data Science, Machine Learning, Visualisation de données</p>
+          <p>Analyste statisticien avec 2 ans d'expérience, spécialisée en apprentissage automatique, visualisation de données et conception de site web, chatbot.</p>
+        </div>
+        <div class="card instructor">
+          <img src="https://images.unsplash.com/photo-1545996124-1b6a7f8d0f1b?q=80&w=600&auto=format&fit=crop" alt="Djakalika">
+          <h3>Djakalika SOMA</h3>
+          <p><strong>Spécialités :</strong> Développement Web, Automatisation, Data Science</p>
+          <p>Data scientist à Orange Burkina Faso avec 3 ans d'expérience. Développeur site Web, de chatbot et expert en automatisation des tâches.</p>
+        </div>
+        <div class="card instructor">
+          <img src="" alt="Alain">
+          <h3>Alain B.</h3>
+          <p><strong>Spécialités :</strong> Coaching carrière, Insertion professionnelle</p>
+          <p>Coach carrière expérimenté, spécialisé dans l'accompagnement CV, préparation aux entretiens et insertion professionnelle.</p>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- ONGLET TÉMOIGNAGES -->
+  <div id="temoignages" class="tab-content">
+    <section class="container">
+      <h2>Ce que disent nos étudiants</h2>
+      <div class="grid-2">
+        <div class="testimonial card">
+          <p>"Grâce à la formation Data Science, j'ai décroché un poste chez une startup tech. Les projets pratiques m'ont énormément aidé à comprendre les enjeux réels du métier."</p>
+          <small><strong>Awa, 27 ans - Data Analyst</strong></small>
+        </div>
+        <div class="testimonial card">
+          <p>"Le suivi des formateurs et les ateliers pratiques sont excellents. Formation très opérationnelle qui m'a permis de changer de carrière rapidement."</p>
+          <small><strong>Jean, 31 ans - Développeur Web</strong></small>
+        </div>
+        <div class="testimonial card">
+          <p>"Une formation complète en marketing digital. J'ai pu appliquer immédiatement les techniques apprises dans mon entreprise avec des résultats concrets."</p>
+          <small><strong>Fatou, 29 ans - Marketing Manager</strong></small>
+        </div>
+        <div class="testimonial card">
+          <p>"Les formateurs sont passionnés et disponibles. Le contenu est à jour avec les dernières technologies. Je recommande vivement!"</p>
+          <small><strong>Mohamed, 25 ans - Étudiant Data Science</strong></small>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- ONGLET TARIFS -->
+  <div id="tarifs" class="tab-content">
+    <section class="container">
+      <h2>Nos Tarifs</h2>
+      <div class="grid-3">
+        <div class="pricing">
+          <h3>Formation Basique</h3>
+          <div class="price">45€</div>
+          <ul>
+            <li>Accès aux cours enregistrés</li>
+            <li>Support par email</li>
+            <li>Certificat de participation</li>
+            <li>Durée : 1 mois</li>
+          </ul>
+          <button onclick="showTab('inscription')">S'inscrire</button>
+        </div>
+        <div class="pricing featured">
+          <h3>Formation Premium</h3>
+          <div class="price">60€</div>
+          <ul>
+            <li>Cours en direct + enregistrés</li>
+            <li>Support prioritaire</li>
+            <li>Projets pratiques guidés</li>
+            <li>Certificat professionnel</li>
+            <li>Durée : 2 mois</li>
+          </ul>
+          <button onclick="showTab('inscription')">S'inscrire</button>
+        </div>
+        <div class="pricing">
+          <h3>Formation Pro</h3>
+          <div class="price">55€</div>
+          <ul>
+            <li>Formation complète</li>
+            <li>Mentorat individuel</li>
+            <li>Portfolio de projets</li>
+            <li>Aide à l'insertion</li>
+            <li>Durée : 3 mois</li>
+          </ul>
+          <button onclick="showTab('inscription')">S'inscrire</button>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- ONGLET À PROPOS -->
+  <div id="apropos" class="tab-content">
+    <section class="container">
+      <h2>À propos de Formation Pro</h2>
+      <div class="grid-2">
+        <div class="card">
+          <h3>Notre Mission</h3>
+          <p>Démocratiser l'accès aux formations technologiques de qualité au Burkina Faso. Nous croyons que chacun mérite d'avoir accès aux compétences numériques essentielles pour réussir dans l'économie digitale.</p>
+        </div>
+        <div class="card">
+          <h3>Notre Vision</h3>
+          <p>Devenir le leader de la formation professionnelle numérique en Afrique de l'Ouest, en formant une nouvelle génération de talents tech capables de relever les défis de demain.</p>
+        </div>
+        <div class="card">
+          <h3>Nos Valeurs</h3>
+          <ul style="list-style:none;padding:0;">
+            <li>✓ Excellence pédagogique</li>
+            <li>✓ Accessibilité financière</li>
+            <li>✓ Accompagnement personnalisé</li>
+            <li>✓ Innovation constante</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Pourquoi nous choisir ?</h3>
+          <ul style="list-style:none;padding:0;">
+            <li>✓ Formateurs certifiés et expérimentés</li>
+            <li>✓ Projets concrets et portfolio</li>
+            <li>✓ Suivi post-formation</li>
+            <li>✓ Taux d'insertion élevé</li>
+          </ul>
+        </div>
+      </div>
+      
+      <div class="contact-info">
+        <h3>Nous contacter</h3>
+        <p><strong>Téléphone :</strong> 56 69 76 90 / 73 52 15 47</p>
+        <p><strong>Email :</strong> yinaasome@gmail.com</p>
+        <p><strong>Adresse :</strong> Ouagadougou, Burkina Faso</p>
+        <p><strong>Horaires :</strong> Lundi - Vendredi : 8h - 17h</p>
+      </div>
+    </section>
+  </div>
+
+  <!-- ONGLET INSCRIPTION -->
+  <div id="inscription" class="tab-content">
+    <section class="container">
+      <h2>Inscription aux Formations</h2>
+      <div class="grid-2">
+        <div>
+          <form>
+            <input type="text" name="nom" placeholder="Nom complet" required>
+            <input type="email" name="email" placeholder="Email" required>
+            <input type="number" name="numeriques" placeholder="Numéro WhatsApp" required>
+            <select name="parcours" required>
+              <option value="">-- Choisir un parcours --</option>
+              <option value="data">Data Science</option>
+              <option value="dev">Développement Web</option>
+              <option value="marketing">Marketing Digital</option>
+              <option value="ia">Intelligence Artificielle</option>
+              <option value="blockchain">Blockchain</option>
+            </select>
+            <select name="niveau" required>
+              <option value="">-- Niveau d'expérience --</option>
+              <option value="debutant">Débutant</option>
+              <option value="intermediaire">Intermédiaire</option>
+              <option value="avance">Avancé</option>
+            </select>
+            <textarea name="motivation" placeholder="Pourquoi souhaitez-vous suivre cette formation ?" rows="4"></textarea>
+            <button type="submit">Envoyer ma candidature</button>
+          </form>
+        </div>
+        <div class="card">
+          <h3>Processus d'inscription</h3>
+          <ol>
+            <li><strong>Candidature :</strong> Remplissez le formulaire ci-contre</li>
+            <li><strong>Entretien :</strong> Nous vous contactons sous 48h</li>
+            <li><strong>Validation :</strong> Confirmation de votre place</li>
+            <li><strong>Paiement :</strong> Modalités flexibles disponibles</li>
+            <li><strong>Formation :</strong> Début de votre parcours</li>
+          </ol>
+          
+          <div style="margin-top:20px;padding:15px;background:#f0fdfa;border-radius:8px;">
+            <h4>Modalités de paiement</h4>
+            <p>• Paiement en 3 fois sans frais</p>
+            <p>• Mobile Money accepté</p>
+            <p>• Bourses disponibles sur critères sociaux</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <footer class="container" style="text-align:center;padding:40px 0;border-top:1px solid #e5e7eb;margin-top:40px;">
+    <div style="margin-bottom:20px;">
+      <strong>FORMATION PRO</strong> - Votre partenaire pour l'excellence
+    </div>
+    <div style="margin-bottom:10px;">
+      <strong>Contacts :</strong> 56 69 76 90 / 73 52 15 47 | yinaasome@gmail.com
+    </div>
+    <div style="margin-bottom:20px;">
+      <strong>Suivez-nous :</strong> 
+      <a href="#" style="color:#0ea5a4;text-decoration:none;margin:0 10px;">Facebook</a> | 
+      <a href="#" style="color:#0ea5a4;text-decoration:none;margin:0 10px;">TikTok</a> | 
+      <a href="#" style="color:#0ea5a4;text-decoration:none;margin:0 10px;">LinkedIn</a>
+    </div>
     <small>© 2025 Formation Pro — Tous droits réservés</small>
-  </footer>
-  <footer class="container" style="text-align:center;padding:20px 0;">
-    <small>Nos contacts : 56 69 76 90 / 73 52 15 47 | yinaasome@gmail.com</small>
-  </footer>
-  <footer class="container" style="text-align:center;padding:20px 0;">
-    <small>site facebook: | site tictok: </small>
   </footer>
 
   <script>
-    // Slider automatique
-    const slides = document.querySelector('.slides');
-    const totalSlides = slides.children.length;
-    let index = 0;
+    // Données des formations
+    const formations = {
+      enCours: [
+        {
+          titre: "Développement Web - Formation en cours",
+          desc: "Modules en direct et ateliers pratiques avec projets réels.",
+          tarifs: "60€",
+          img: "https://images.unsplash.com/photo-1498050108023-c5249f4df085?q=80&w=400&auto=format&fit=crop"
+        },
+        {
+          titre: "Data Science - Formation en cours",
+          desc: "Projet guidé en direct avec certification professionnelle.",
+          tarifs: "50€",
+          img: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=400&auto=format&fit=crop"
+        }
+      ],
+      passees: [
+        {
+          titre: "Marketing Digital - Formation passée",
+          desc: "Stratégies numériques et campagnes réelles avec études de cas.",
+          tarifs: "45€",
+          img: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=400&auto=format&fit=crop"
+        },
+        {
+          titre: "Intelligence Artificielle - Formation passée",
+          desc: "Apprentissage automatique, conception de chatbot et projets pratiques.",
+          tarifs: "55€",
+          img: "https://images.unsplash.com/photo-1555255707-c07966088b7b?q=80&w=400&auto=format&fit=crop"
+        },
+        {
+          titre: "Blockchain - Formation passée",
+          desc: "Introduction aux cryptomonnaies et contrats intelligents.",
+          tarifs: "50€",
+          img: "https://images.unsplash.com/photo-1639762681485-074b7f938ba0?q=80&w=400&auto=format&fit=crop"
+        }
+      ]
+    };
 
-    function showNextSlide(){
-      index = (index + 1) % totalSlides;
-      slides.style.transform = `translateX(-${index * 100}%)`;
+    // Gestion des onglets
+    function showTab(tabId) {
+      // Masquer tous les contenus d'onglets
+      const tabs = document.querySelectorAll('.tab-content');
+      tabs.forEach(tab => tab.classList.remove('active'));
+      
+      // Afficher l'onglet sélectionné
+      document.getElementById(tabId).classList.add('active');
+      
+      // Mettre à jour les liens de navigation
+      const links = document.querySelectorAll('.tab-link');
+      links.forEach(link => link.classList.remove('active'));
+      event.target.classList.add('active');
+      
+      // Scroller vers le haut
+      window.scrollTo({top: 0, behavior: 'smooth'});
     }
 
-    setInterval(showNextSlide, 5000);
+    // Affichage des formations
+    const container = document.getElementById("formationsContainer");
+    const select = document.getElementById("typeFormation");
 
-    // Formulaire (simulation)
-    document.querySelector('form').addEventListener('submit', e=>{
-      e.preventDefault();
-      alert('Merci ! Nous vous contacterons pour finaliser votre inscription.');
-      e.target.reset();
-    });
+    function afficherFormations(type) {
+      if (container) {
+        container.innerHTML = "";
+        formations[type].forEach(f => {
+          const card = document.createElement("div");
+          card.className = "card";
+          card.innerHTML = `
+            <img src="${f.img}" alt="${f.titre}">
+            <h3>${f.titre}</h3>
+            <p>${f.desc}</p>
+            <p><strong>Tarif :</strong> ${f.tarifs}</p>
+          `;
+          container.appendChild(card);
+        });
+      }
+    }
+
+    // Initialisation des formations
+    if (select) {
+      afficherFormations(select.value);
+      select.addEventListener("change", () => {
+        afficherFormations(select.value);
+      });
+    }
+
+    // Slider automatique
+    const slides = document.querySelector('.slides');
+    if (slides) {
+      const totalSlides = slides.children.length;
+      let index = 0;
+
+      function showNextSlide(){
+        index = (index + 1) % totalSlides;
+        slides.style.transform = `translateX(-${index * 100}%)`;
+      }
+
+      setInterval(showNextSlide, 6000);
+    }
+
+    // Formulaire
+    const form = document.querySelector('form');
+    if (form) {
+      form.addEventListener('submit', e => {
+        e.preventDefault();
+        alert('Merci pour votre candidature ! Nous vous contacterons dans les 48h pour finaliser votre inscription.');
+        e.target.reset();
+      });
+    }
   </script>
 </body>
 </html>
-
