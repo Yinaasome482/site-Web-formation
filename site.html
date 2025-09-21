@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FORMATION PRO — Formation Dynamique</title>
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box;font-family:sans-serif;}
+    body{line-height:1.5;color:#1f2937;background:#f9fafb;}
+    header{background:#0ea5a4;color:white;position:sticky;top:0;z-index:1000;}
+    .container{max-width:1100px;margin:0 auto;padding:20px;}
+    nav{display:flex;justify-content:space-between;align-items:center;}
+    nav ul{display:flex;gap:20px;}
+    nav ul li a{color:white;text-decoration:none;font-weight:600;}
+    .cta{background:white;color:#111827;padding:6px 12px;border-radius:6px;font-weight:600;}
+
+    /* Slider Accueil */
+    .slider{position:relative;overflow:hidden;border-radius:12px;}
+    .slides{display:flex;transition:transform 1s ease;}
+    .slides img{width:100%;flex-shrink:0;object-fit:cover;height:400px;}
+
+    section{padding:40px 0;}
+    h2{margin-bottom:16px;color:#0ea5a4;}
+    .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
+    .grid-2{display:grid;grid-template-columns:repeat(2,1fr);gap:20px;}
+
+    .card{background:white;border-radius:12px;padding:16px;box-shadow:0 4px 12px rgba(0,0,0,0.1);}
+    .card img{width:100%;border-radius:12px;height:180px;object-fit:cover;}
+    .instructor img{width:100px;height:100px;border-radius:50%;object-fit:cover;margin-bottom:12px;}
+    .testimonial{background:#f0fdfa;padding:16px;border-radius:12px;}
+
+    /* Formulaire */
+    form{display:grid;gap:12px;}
+    input, select, textarea, button{padding:10px;border-radius:6px;border:1px solid #e5e7eb;font-size:1rem;}
+    button{background:#0ea5a4;color:white;border:none;font-weight:700;cursor:pointer;}
+
+    /* Responsive */
+    @media(max-width:900px){
+      .grid-3{grid-template-columns:1fr;}
+      .grid-2{grid-template-columns:1fr;}
+      nav ul{display:none;}
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <nav>
+        <div class="logo" style="font-weight:700;font-size:1.2rem;">FORMATION PRO</div>
+        <ul>
+          <li><a href="#accueil">Accueil</a></li>
+          <li><a href="#formations">Formations</a></li>
+          <li><a href="#formateurs">Formateurs</a></li>
+          <li><a href="#temoignages">Témoignages</a></li>
+          <li><a href="#inscription">Inscription</a></li>
+        </ul>
+        <a class="cta" href="#inscription">S'inscrire</a>
+      </nav>
+    </div>
+  </header>
+
+  <section id="accueil" class="container">
+    <div class="slider">
+      <div class="slides">
+        <img src="https://images.unsplash.com/photo-1557804506-669a67965ba0?q=80&w=600&auto=format&fit=crop" alt="Formation 1">
+        <img src="https://images.unsplash.com/photo-1519389950473-47ba0277781c?q=80&w=600&auto=format&fit=crop" alt="Formation 2">
+        <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=600&auto=format&fit=crop"alt="Formation 3">
+        <img src="https://images.unsplash.com/photo-1504384308090-c894fdcc538d?q=80&w=600&auto=format&fit=crop" alt="Formation 4">
+        <img src="images/formation.jpg" alt="Formation 5">
+
+      </div>
+    </div>
+  </section>
+
+  <section id="formations" class="container">
+  <h2 style="margin-top:40px;">Formations Disponibles</h2>
+
+  <!-- Sélecteur déroulant -->
+  <label for="typeFormation" style="font-weight:600;margin-bottom:8px;display:block;">
+    Choisir le type de formation :
+  </label>
+  <select id="typeFormation">
+    <option value="enCours">Formations en cours</option>
+    <option value="passees">Formations passées</option>
+  </select>
+
+  <!-- Conteneur des cartes de formation -->
+  <div id="formationsContainer" class="grid-3" style="margin-top:20px;">
+  <!-- Les cartes seront insérées dynamiquement via JS -->
+</div>
+
+<script>
+  const formations = {
+    enCours: [
+      {
+        titre: "Développement Web - Formation en cours",
+        desc: "Modules en direct et ateliers pratiques.",
+        tarifs: "60€",
+        img: "images/dev_en_cours.jpg"
+      },
+      {
+        titre: "Data Science - Formation en cours",
+        desc: "Projet guidé en direct avec certification.",
+        tarifs: "50€",
+        img: "images/data_en_cours.jpg"
+      }
+    ],
+    passees: [
+      {
+        titre: "Marketing Digital - Formation passée",
+        desc: "Stratégies numériques et campagnes réelles.",
+        tarifs: "45€",
+        img: "images/formation.jpg"
+      },
+      {
+        titre: "Intelligence Artificielle - Formation passée",
+        desc: "Apprentissage automatique, conception de chatbot et projets pratiques.",
+        tarifs: "55€",
+        img: "images/ia_passee.jpg"
+      },
+      {
+        titre: "Blockchain - Formation passée",
+        desc: "Introduction aux cryptomonnaies et contrats intelligents.",
+        tarifs: "50€",
+        img: "images/blockchain_passee.jpg"
+      }
+    ]
+  };
+
+  const container = document.getElementById("formationsContainer");
+  const select = document.getElementById("typeFormation");
+
+  function afficherFormations(type) {
+    container.innerHTML = "";
+    formations[type].forEach(f => {
+      const card = document.createElement("div");
+      card.className = "card";
+      card.innerHTML = `
+        <img src="${f.img}" alt="${f.titre}">
+        <h3>${f.titre}</h3>
+        <p>${f.desc}</p>
+        <p><strong>Tarif :</strong> ${f.tarifs}</p>
+      `;
+      container.appendChild(card);
+    });
+  }
+
+  // Affichage par défaut
+  afficherFormations(select.value);
+
+  // Changement du select
+  select.addEventListener("change", () => {
+    afficherFormations(select.value);
+  });
+</script>
+
+
+
+  <section id="formateurs" class="container">
+    <h2>Nos Formateurs</h2>
+    <div class="grid-3">
+      <div class="card instructor">
+        <img src="images/some.jpg" alt="YINAA">
+        <h3>YINAA SOME</h3>
+        <p>Analyste statisticien avec 2 ans d'expérience, spécialisée en apprentissage automatique,  visualisation de données et conception de site web, chatbot.</p>
+      </div>
+      <div class="card instructor">
+        <img src="https://images.unsplash.com/photo-1545996124-1b6a7f8d0f1b?q=80&w=600&auto=format&fit=crop" alt="Djakalika">
+        <h3>Djakalika SOMA</h3>
+        <p>Data scientist à Orange Burkina Faso avec 3 ans d'expérience. Développeur site Web, de chatbot et il est egalement expert en automatisation des taches.</p>
+      </div>
+      <div class="card instructor">
+        <img src="" alt="Alain">
+        <h3>Alain B.</h3>
+        <p>Coach carrière, accompagnement CV, entretien et insertion professionnelle.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="temoignages" class="container">
+    <h2>Témoignages</h2>
+    <div class="grid-2">
+      <div class="testimonial card">
+        <p>“Grâce à la formation Data, j'ai décroché un poste chez une startup tech. Les projets m'ont beaucoup aidé.”</p>
+        <small><strong>Awa, 27 ans</strong></small>
+      </div>
+      <div class="testimonial card">
+        <p>“Le suivi des formateurs et les ateliers pratiques sont excellents — très opérationnel.”</p>
+        <small><strong>Jean, 31 ans</strong></small>
+      </div>
+    </div>
+  </section>
+
+  <section id="inscription" class="container">
+    <h2>Inscription</h2>
+    <form>
+      <input type="text" name="nom" placeholder="Nom complet" required>
+      <input type="email" name="email" placeholder="Email" required>
+      <input type="number" name="numériques" placeholder="Numero whatsapp" required>
+      <select name="parcours" required>
+        <option value="">-- Choisir un parcours --</option>
+        <option value="data">Data Science</option>
+        <option value="dev">Développement Web</option>
+        <option value="marketing">Marketing Digital</option>
+      </select>
+      <button type="submit">S'inscrire</button>
+    </form>
+  </section>
+
+  <footer class="container" style="text-align:center;padding:20px 0;">
+    <small>© 2025 Formation Pro — Tous droits réservés</small>
+  </footer>
+  <footer class="container" style="text-align:center;padding:20px 0;">
+    <small>Nos contacts : 56 69 76 90 / 73 52 15 47 | yinaasome@gmail.com</small>
+  </footer>
+  <footer class="container" style="text-align:center;padding:20px 0;">
+    <small>site facebook: | site tictok: </small>
+  </footer>
+
+  <script>
+    // Slider automatique
+    const slides = document.querySelector('.slides');
+    const totalSlides = slides.children.length;
+    let index = 0;
+
+    function showNextSlide(){
+      index = (index + 1) % totalSlides;
+      slides.style.transform = `translateX(-${index * 100}%)`;
+    }
+
+    setInterval(showNextSlide, 5000);
+
+    // Formulaire (simulation)
+    document.querySelector('form').addEventListener('submit', e=>{
+      e.preventDefault();
+      alert('Merci ! Nous vous contacterons pour finaliser votre inscription.');
+      e.target.reset();
+    });
+  </script>
+</body>
+</html>
