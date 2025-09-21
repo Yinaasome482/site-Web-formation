@@ -76,13 +76,34 @@
     button{background:#0ea5a4;color:white;border:none;font-weight:700;cursor:pointer;transition:background 0.3s;}
     button:hover{background:#0891b2;}
 
+    /* Menu Hamburger */
+    .hamburger{display:none;flex-direction:column;cursor:pointer;padding:5px;}
+    .hamburger span{width:25px;height:3px;background:white;margin:3px 0;transition:0.3s;}
+    .hamburger.active span:nth-child(1){transform:rotate(-45deg) translate(-5px, 6px);}
+    .hamburger.active span:nth-child(2){opacity:0;}
+    .hamburger.active span:nth-child(3){transform:rotate(45deg) translate(-5px, -6px);}
+    
+    .mobile-menu{
+      display:none;position:fixed;top:70px;left:0;right:0;
+      background:#0ea5a4;padding:20px;box-shadow:0 4px 12px rgba(0,0,0,0.1);
+      z-index:999;
+    }
+    .mobile-menu.active{display:block;}
+    .mobile-menu a{
+      display:block;color:white;padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.1);
+      text-decoration:none;font-weight:600;
+    }
+    .mobile-menu a:hover{color:#fbbf24;}
+
     /* Responsive */
     @media(max-width:900px){
       .grid-3, .grid-4{grid-template-columns:1fr;}
       .grid-2{grid-template-columns:1fr;}
       nav ul{display:none;}
+      .hamburger{display:flex;}
       .slide-overlay h1{font-size:1.8rem;}
       .slide-overlay p{font-size:1rem;}
+      .cta{display:none;}
     }
   </style>
 </head>
@@ -100,10 +121,29 @@
           <li><a href="#" onclick="showTab('apropos')" class="tab-link">À propos</a></li>
           <li><a href="#" onclick="showTab('inscription')" class="tab-link">Inscription</a></li>
         </ul>
+        
+        <!-- Menu Hamburger pour mobile -->
+        <div class="hamburger" onclick="toggleMobileMenu()">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+        
         <a class="cta" href="#" onclick="showTab('inscription')">S'inscrire</a>
       </nav>
     </div>
   </header>
+
+  <!-- Menu Mobile -->
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="#" onclick="showTab('accueil'); closeMobileMenu();">Accueil</a>
+    <a href="#" onclick="showTab('formations'); closeMobileMenu();">Formations</a>
+    <a href="#" onclick="showTab('formateurs'); closeMobileMenu();">Formateurs</a>
+    <a href="#" onclick="showTab('temoignages'); closeMobileMenu();">Témoignages</a>
+    <a href="#" onclick="showTab('tarifs'); closeMobileMenu();">Tarifs</a>
+    <a href="#" onclick="showTab('apropos'); closeMobileMenu();">À propos</a>
+    <a href="#" onclick="showTab('inscription'); closeMobileMenu();">Inscription</a>
+  </div>
 
   <!-- ONGLET ACCUEIL -->
   <div id="accueil" class="tab-content active">
@@ -194,7 +234,7 @@
       <h2>Nos Formateurs Experts</h2>
       <div class="grid-3">
         <div class="card instructor">
-          <img src=".images/some.jpg" alt="YINAA">
+          <img src="images/some.jpg" alt="YINAA">
           <h3>YINAA SOME</h3>
           <p><strong>Spécialités :</strong> Data Science, Machine Learning, Visualisation de données</p>
           <p>Analyste statisticien avec 2 ans d'expérience, spécialisée en apprentissage automatique, visualisation de données et conception de site web, chatbot.</p>
@@ -430,6 +470,23 @@
         }
       ]
     };
+
+    // Gestion du menu mobile
+    function toggleMobileMenu() {
+      const mobileMenu = document.getElementById('mobileMenu');
+      const hamburger = document.querySelector('.hamburger');
+      
+      mobileMenu.classList.toggle('active');
+      hamburger.classList.toggle('active');
+    }
+
+    function closeMobileMenu() {
+      const mobileMenu = document.getElementById('mobileMenu');
+      const hamburger = document.querySelector('.hamburger');
+      
+      mobileMenu.classList.remove('active');
+      hamburger.classList.remove('active');
+    }
 
     // Gestion des onglets
     function showTab(tabId) {
