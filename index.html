@@ -95,6 +95,61 @@
     }
     .mobile-menu a:hover{color:#fbbf24;}
 
+    /* Nouveaux styles pour les documents */
+    .login-form{
+      max-width:400px;margin:0 auto;background:white;padding:30px;
+      border-radius:12px;box-shadow:0 8px 20px rgba(0,0,0,0.1);
+    }
+    .document-section{
+      background:white;padding:20px;border-radius:12px;margin-bottom:20px;
+      box-shadow:0 2px 8px rgba(0,0,0,0.1);
+    }
+    .document-item{
+      display:flex;justify-content:space-between;align-items:center;
+      padding:15px;background:#f9fafb;border-radius:8px;margin-bottom:10px;
+    }
+    .document-item:last-child{margin-bottom:0;}
+    .download-btn{
+      background:#0ea5a4;color:white;padding:8px 16px;
+      border-radius:6px;text-decoration:none;font-size:0.9rem;
+    }
+    .download-btn:hover{background:#0891b2;}
+    .error-message{color:#ef4444;background:#fef2f2;padding:12px;border-radius:8px;margin-bottom:15px;}
+    .success-message{color:#10b981;background:#f0fdf4;padding:12px;border-radius:8px;margin-bottom:15px;}
+    
+    /* Modal pour détails formation */
+    .modal{
+      display:none;position:fixed;top:0;left:0;width:100%;height:100%;
+      background:rgba(0,0,0,0.5);z-index:2000;
+    }
+    .modal.active{display:flex;align-items:center;justify-content:center;}
+    .modal-content{
+      background:white;padding:30px;border-radius:12px;
+      max-width:600px;width:90%;max-height:80vh;overflow-y:auto;
+    }
+    .modal-header{
+      display:flex;justify-content:space-between;align-items:center;
+      margin-bottom:20px;
+    }
+    .close-modal{
+      background:none;border:none;font-size:1.5rem;cursor:pointer;
+      color:#6b7280;
+    }
+    .close-modal:hover{color:#1f2937;}
+
+    .learn-more-btn{
+      background:#fbbf24;color:#111827;padding:8px 16px;
+      border-radius:6px;text-decoration:none;font-size:0.9rem;
+      margin-right:10px;
+    }
+    .learn-more-btn:hover{background:#f59e0b;}
+
+    .enroll-direct-btn{
+      background:#0ea5a4;color:white;padding:8px 16px;
+      border-radius:6px;text-decoration:none;font-size:0.9rem;
+    }
+    .enroll-direct-btn:hover{background:#0891b2;}
+
     /* Responsive */
     @media(max-width:900px){
       .grid-3, .grid-4{grid-template-columns:1fr;}
@@ -104,6 +159,7 @@
       .slide-overlay h1{font-size:1.8rem;}
       .slide-overlay p{font-size:1rem;}
       .cta{display:none;}
+      .modal-content{width:95%;padding:20px;}
     }
   </style>
 </head>
@@ -117,6 +173,7 @@
           <li><a href="#" onclick="showTab('formations')" class="tab-link">Formations</a></li>
           <li><a href="#" onclick="showTab('formateurs')" class="tab-link">Formateurs</a></li>
           <li><a href="#" onclick="showTab('temoignages')" class="tab-link">Témoignages</a></li>
+          <li><a href="#" onclick="showTab('documents')" class="tab-link">Mes Documents</a></li>
           <li><a href="#" onclick="showTab('tarifs')" class="tab-link">Tarifs</a></li>
           <li><a href="#" onclick="showTab('apropos')" class="tab-link">À propos</a></li>
           <li><a href="#" onclick="showTab('inscription')" class="tab-link">Inscription</a></li>
@@ -140,6 +197,7 @@
     <a href="#" onclick="showTab('formations'); closeMobileMenu();">Formations</a>
     <a href="#" onclick="showTab('formateurs'); closeMobileMenu();">Formateurs</a>
     <a href="#" onclick="showTab('temoignages'); closeMobileMenu();">Témoignages</a>
+    <a href="#" onclick="showTab('documents'); closeMobileMenu();">Mes Documents</a>
     <a href="#" onclick="showTab('tarifs'); closeMobileMenu();">Tarifs</a>
     <a href="#" onclick="showTab('apropos'); closeMobileMenu();">À propos</a>
     <a href="#" onclick="showTab('inscription'); closeMobileMenu();">Inscription</a>
@@ -228,13 +286,63 @@
     </section>
   </div>
 
+  <!-- ONGLET MES DOCUMENTS -->
+  <div id="documents" class="tab-content">
+    <section class="container">
+      <h2>Mes Documents de Formation</h2>
+      
+      <!-- Zone de connexion -->
+      <div id="loginArea">
+        <div class="login-form">
+          <h3 style="text-align:center;margin-bottom:20px;color:#0ea5a4;">Connexion Sécurisée</h3>
+          <div id="loginMessage"></div>
+          <form id="loginForm">
+            <input type="email" id="loginEmail" placeholder="Email d'inscription" required>
+            <input type="password" id="loginPassword" placeholder="Mot de passe" required>
+            <button type="submit">Se connecter</button>
+          </form>
+          <p style="margin-top:15px;text-align:center;font-size:0.9rem;color:#6b7280;">
+            Première connexion ? Utilisez votre email d'inscription et créez un mot de passe.
+          </p>
+        </div>
+      </div>
+
+      <!-- Zone des documents (cachée par défaut) -->
+      <div id="documentsArea" style="display:none;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:30px;">
+          <div>
+            <h3>Bienvenue, <span id="userName"></span></h3>
+            <p>Formation: <strong id="userFormation"></strong></p>
+          </div>
+          <button onclick="logout()" style="background:#ef4444;">Se déconnecter</button>
+        </div>
+
+        <!-- Documents de formation -->
+        <div class="document-section">
+          <h3 style="color:#0ea5a4;margin-bottom:15px;">📚 Documents de Formation</h3>
+          <div id="formationDocuments">
+            <!-- Généré dynamiquement -->
+          </div>
+        </div>
+
+        <!-- Certificats et attestations -->
+        <div class="document-section">
+          <h3 style="color:#0ea5a4;margin-bottom:15px;">🏆 Certificats & Attestations</h3>
+          <div id="certificates">
+            <!-- Généré dynamiquement -->
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
   <!-- ONGLET FORMATEURS -->
   <div id="formateurs" class="tab-content">
     <section class="container">
       <h2>Nos Formateurs Experts</h2>
       <div class="grid-3">
         <div class="card instructor">
-          <img src=".images/some.jpg" alt="YINAA">
+          <img src="images/some.jpg" alt="YINAA">
           <h3>YINAA SOME</h3>
           <p><strong>Spécialités :</strong> Data Science, Machine Learning, Visualisation de données</p>
           <p>Analyste statisticien avec 2 ans d'expérience, spécialisée en apprentissage automatique, visualisation de données et conception de site web, chatbot.</p>
@@ -373,18 +481,16 @@
       <h2>Inscription aux Formations</h2>
       <div class="grid-2">
         <div>
-          <form>
+          <form id="inscriptionForm">
             <input type="text" name="nom" placeholder="Nom complet" required>
             <input type="email" name="email" placeholder="Email" required>
             <input type="number" name="numeriques" placeholder="Numéro WhatsApp" required>
-            <select name="parcours" required>
+            <select name="parcours" id="parcoursSelect" required>
               <option value="">-- Choisir un parcours --</option>
-              <option value="data">Data Science</option>
-              <option value="dev">Développement Web</option>
-              <option value="marketing">Marketing Digital</option>
-              <option value="ia">Intelligence Artificielle</option>
-              <option value="blockchain">Blockchain</option>
             </select>
+            <div id="tarifInfo" style="padding:10px;background:#f0fdfa;border-radius:6px;margin:10px 0;display:none;">
+              <p><strong>Tarif :</strong> <span id="tarifAmount"></span></p>
+            </div>
             <select name="niveau" required>
               <option value="">-- Niveau d'expérience --</option>
               <option value="debutant">Débutant</option>
@@ -407,13 +513,26 @@
           
           <div style="margin-top:20px;padding:15px;background:#f0fdfa;border-radius:8px;">
             <h4>Modalités de paiement</h4>
-            <p>• Paiement en 3 fois sans frais</p>
-            <p>• Mobile Money accepté</p>
-            <p>• Bourses disponibles sur critères sociaux</p>
+            <p> 1 Paiement en 3 fois sans frais</p>
+            <p> 2 Mobile Money accepté</p>
+            <p> 3 Bourses disponibles sur critères sociaux</p>
           </div>
         </div>
       </div>
     </section>
+  </div>
+
+  <!-- MODAL DÉTAILS FORMATION -->
+  <div id="formationModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="modalTitle"></h3>
+        <button class="close-modal" onclick="closeModal()">&times;</button>
+      </div>
+      <div id="modalBody">
+        <!-- Contenu généré dynamiquement -->
+      </div>
+    </div>
   </div>
 
   <footer class="container" style="text-align:center;padding:40px 0;border-top:1px solid #e5e7eb;margin-top:40px;">
@@ -433,43 +552,183 @@
   </footer>
 
   <script>
-    // Données des formations
+    // Base de données des utilisateurs inscrits (simulation)
+    const usersDatabase = {
+      'jean.doe@email.com': {
+        name: 'Jean Doe',
+        password: null, // Première connexion
+        formation: 'Développement Web',
+        status: 'active',
+        documents: {
+          formation: [
+            { name: 'Module 1 - Introduction HTML/CSS', type: 'PDF', url: '#' },
+            { name: 'Module 2 - JavaScript Avancé', type: 'PDF', url: '#' },
+            { name: 'Projet Final - Guide', type: 'PDF', url: '#' },
+            { name: 'Ressources Complémentaires', type: 'ZIP', url: '#' }
+          ],
+          certificates: [
+            { name: 'Certificat de Participation', type: 'PDF', url: '#', status: 'available' }
+          ]
+        }
+      },
+      'marie.martin@email.com': {
+        name: 'Marie Martin',
+        password: 'password123',
+        formation: 'Data Science',
+        status: 'active',
+        documents: {
+          formation: [
+            { name: 'Module 1 - Python pour Data Science', type: 'PDF', url: '#' },
+            { name: 'Module 2 - Machine Learning', type: 'PDF', url: '#' },
+            { name: 'Datasets d\'entraînement', type: 'CSV', url: '#' },
+            { name: 'Notebooks Jupyter', type: 'ZIP', url: '#' }
+          ],
+          certificates: [
+            { name: 'Attestation de Formation', type: 'PDF', url: '#', status: 'available' },
+            { name: 'Certificat Professionnel', type: 'PDF', url: '#', status: 'pending' }
+          ]
+        }
+      },
+      'paul.durand@email.com': {
+        name: 'Paul Durand',
+        password: 'mypass456',
+        formation: 'Marketing Digital',
+        status: 'completed',
+        documents: {
+          formation: [
+            { name: 'Guide SEO Complet', type: 'PDF', url: '#' },
+            { name: 'Templates Réseaux Sociaux', type: 'ZIP', url: '#' },
+            { name: 'Outils Analytics', type: 'PDF', url: '#' }
+          ],
+          certificates: [
+            { name: 'Certificat de Réussite', type: 'PDF', url: '#', status: 'available' },
+            { name: 'Badge LinkedIn', type: 'PNG', url: '#', status: 'available' }
+          ]
+        }
+      }
+    };
+
+    // Données des formations avec détails complets
     const formations = {
       enCours: [
         {
+          id: 'dev-web-2025',
           titre: "Développement Web - Formation en cours",
           desc: "Modules en direct et ateliers pratiques avec projets réels.",
           tarifs: "60€",
-          img: "https://images.unsplash.com/photo-1498050108023-c5249f4df085?q=80&w=400&auto=format&fit=crop"
+          img: "https://images.unsplash.com/photo-1498050108023-c5249f4df085?q=80&w=400&auto=format&fit=crop",
+          details: {
+            duree: "3 mois",
+            niveau: "Débutant à Intermédiaire",
+            prochaineCession: "15 Mars 2025",
+            modules: [
+              "HTML5 & CSS3 Moderne",
+              "JavaScript ES6+",
+              "Framework React",
+              "Base de données",
+              "Déploiement & DevOps"
+            ],
+            prerequis: "Aucun prérequis technique",
+            certification: "Certificat professionnel reconnu",
+            projets: "3 projets pratiques + portfolio complet"
+          }
         },
         {
+          id: 'data-science-2025',
           titre: "Data Science - Formation en cours",
           desc: "Projet guidé en direct avec certification professionnelle.",
           tarifs: "50€",
-          img: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=400&auto=format&fit=crop"
+          img: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=400&auto=format&fit=crop",
+          details: {
+            duree: "4 mois",
+            niveau: "Intermédiaire",
+            prochaineCession: "20 Mars 2025",
+            modules: [
+              "Python pour Data Science",
+              "Statistiques & Probabilités",
+              "Machine Learning",
+              "Visualisation de données",
+              "Big Data & Analytics"
+            ],
+            prerequis: "Bases en mathématiques",
+            certification: "Certificat Data Scientist",
+            projets: "2 projets d'analyse de données réelles"
+          }
         }
       ],
       passees: [
         {
+          id: 'marketing-digital-2024',
           titre: "Marketing Digital - Formation passée",
           desc: "Stratégies numériques et campagnes réelles avec études de cas.",
           tarifs: "45€",
-          img: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=400&auto=format&fit=crop"
+          img: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=400&auto=format&fit=crop",
+          details: {
+            duree: "2 mois",
+            niveau: "Tous niveaux",
+            derniereSession: "Janvier 2025",
+            modules: [
+              "SEO & Référencement",
+              "Publicité Facebook/Google",
+              "Content Marketing",
+              "Email Marketing",
+              "Analytics & Reporting"
+            ],
+            prerequis: "Notions de base en informatique",
+            certification: "Certificat Marketing Digital",
+            projets: "Campagne marketing complète"
+          }
         },
         {
+          id: 'ia-2024',
           titre: "Intelligence Artificielle - Formation passée",
           desc: "Apprentissage automatique, conception de chatbot et projets pratiques.",
           tarifs: "55€",
-          img: "https://images.unsplash.com/photo-1555255707-c07966088b7b?q=80&w=400&auto=format&fit=crop"
+          img: "https://images.unsplash.com/photo-1555255707-c07966088b7b?q=80&w=400&auto=format&fit=crop",
+          details: {
+            duree: "3 mois",
+            niveau: "Avancé",
+            derniereSession: "Décembre 2024",
+            modules: [
+              "Introduction à l'IA",
+              "Machine Learning avancé",
+              "Deep Learning",
+              "Traitement du langage naturel",
+              "Développement de chatbots"
+            ],
+            prerequis: "Python et mathématiques",
+            certification: "Certificat IA Specialist",
+            projets: "Développement d'un chatbot intelligent"
+          }
         },
         {
+          id: 'blockchain-2024',
           titre: "Blockchain - Formation passée",
           desc: "Introduction aux cryptomonnaies et contrats intelligents.",
           tarifs: "50€",
-          img: "https://images.unsplash.com/photo-1639762681485-074b7f938ba0?q=80&w=400&auto=format&fit=crop"
+          img: "https://images.unsplash.com/photo-1639762681485-074b7f938ba0?q=80&w=600&auto=format&fit=crop",
+          details: {
+            duree: "2 mois",
+            niveau: "Intermédiaire",
+            derniereSession: "Novembre 2024",
+            modules: [
+              "Fondamentaux Blockchain",
+              "Cryptomonnaies",
+              "Smart Contracts",
+              "DeFi et NFT",
+              "Sécurité Blockchain"
+            ],
+            prerequis: "Programmation de base",
+            certification: "Certificat Blockchain Developer",
+            projets: "Création d'un smart contract"
+          }
         }
       ]
     };
+
+    // Variables globales
+    let currentUser = null;
+    let selectedFormation = null;
 
     // Gestion du menu mobile
     function toggleMobileMenu() {
@@ -500,17 +759,20 @@
       // Mettre à jour les liens de navigation
       const links = document.querySelectorAll('.tab-link');
       links.forEach(link => link.classList.remove('active'));
-      event.target.classList.add('active');
+      
+      // Trouver le lien correspondant et l'activer
+      const activeLink = document.querySelector(`[onclick="showTab('${tabId}')"]`);
+      if (activeLink) {
+        activeLink.classList.add('active');
+      }
       
       // Scroller vers le haut
       window.scrollTo({top: 0, behavior: 'smooth'});
     }
 
-    // Affichage des formations
-    const container = document.getElementById("formationsContainer");
-    const select = document.getElementById("typeFormation");
-
+    // Gestion des formations
     function afficherFormations(type) {
+      const container = document.getElementById("formationsContainer");
       if (container) {
         container.innerHTML = "";
         formations[type].forEach(f => {
@@ -521,19 +783,316 @@
             <h3>${f.titre}</h3>
             <p>${f.desc}</p>
             <p><strong>Tarif :</strong> ${f.tarifs}</p>
+            <div style="margin-top:15px;">
+              <a href="#" class="learn-more-btn" onclick="openFormationModal('${f.id}', '${type}')">En savoir plus</a>
+              ${type === 'enCours' ? `<a href="#" class="enroll-direct-btn" onclick="enrollInFormation('${f.id}')">S'inscrire maintenant</a>` : ''}
+            </div>
           `;
           container.appendChild(card);
         });
       }
     }
 
-    // Initialisation des formations
-    if (select) {
-      afficherFormations(select.value);
-      select.addEventListener("change", () => {
-        afficherFormations(select.value);
-      });
+    // Ouvrir le modal de détail formation
+    function openFormationModal(formationId, type) {
+      const formation = formations[type].find(f => f.id === formationId);
+      if (!formation) return;
+
+      const modal = document.getElementById('formationModal');
+      const modalTitle = document.getElementById('modalTitle');
+      const modalBody = document.getElementById('modalBody');
+
+      modalTitle.textContent = formation.titre;
+      
+      modalBody.innerHTML = `
+        <div style="margin-bottom:20px;">
+          <img src="${formation.img}" alt="${formation.titre}" style="width:100%;height:200px;object-fit:cover;border-radius:8px;">
+        </div>
+        
+        <div style="margin-bottom:20px;">
+          <h4 style="color:#0ea5a4;margin-bottom:10px;">📋 Informations Générales</h4>
+          <p><strong>Durée :</strong> ${formation.details.duree}</p>
+          <p><strong>Niveau :</strong> ${formation.details.niveau}</p>
+          <p><strong>Tarif :</strong> ${formation.tarifs}</p>
+          ${type === 'enCours' 
+            ? `<p><strong>Prochaine session :</strong> ${formation.details.prochaineCession}</p>`
+            : `<p><strong>Dernière session :</strong> ${formation.details.derniereSession}</p>`
+          }
+        </div>
+
+        <div style="margin-bottom:20px;">
+          <h4 style="color:#0ea5a4;margin-bottom:10px;">📚 Programme de Formation</h4>
+          <ul style="margin-left:20px;">
+            ${formation.details.modules.map(module => `<li>${module}</li>`).join('')}
+          </ul>
+        </div>
+
+        <div style="margin-bottom:20px;">
+          <h4 style="color:#0ea5a4;margin-bottom:10px;">📋 Prérequis</h4>
+          <p>${formation.details.prerequis}</p>
+        </div>
+
+        <div style="margin-bottom:20px;">
+          <h4 style="color:#0ea5a4;margin-bottom:10px;">🏆 Certification</h4>
+          <p>${formation.details.certification}</p>
+        </div>
+
+        <div style="margin-bottom:20px;">
+          <h4 style="color:#0ea5a4;margin-bottom:10px;">💼 Projets Pratiques</h4>
+          <p>${formation.details.projets}</p>
+        </div>
+
+        ${type === 'enCours' ? `
+          <div style="text-align:center;margin-top:30px;">
+            <button onclick="enrollInFormation('${formationId}')" 
+                    style="background:#0ea5a4;color:white;padding:15px 30px;border:none;border-radius:8px;font-size:1.1rem;cursor:pointer;">
+              S'inscrire à cette formation - ${formation.tarifs}
+            </button>
+          </div>
+        ` : `
+          <div style="text-align:center;margin-top:30px;padding:15px;background:#f3f4f6;border-radius:8px;">
+            <p><strong>Formation terminée</strong></p>
+            <p>Cette formation sera bientôt reprogrammée. Contactez-nous pour être informé.</p>
+          </div>
+        `}
+      `;
+
+      modal.classList.add('active');
     }
+
+    // Fermer le modal
+    function closeModal() {
+      const modal = document.getElementById('formationModal');
+      modal.classList.remove('active');
+    }
+
+    // Inscription directe à une formation
+    function enrollInFormation(formationId) {
+      selectedFormation = formationId;
+      
+      // Fermer le modal si ouvert
+      closeModal();
+      
+      // Aller à l'onglet inscription
+      showTab('inscription');
+      
+      // Mettre à jour le formulaire
+      updateInscriptionForm();
+    }
+
+    // Mettre à jour le formulaire d'inscription
+    function updateInscriptionForm() {
+      const parcoursSelect = document.getElementById('parcoursSelect');
+      const tarifInfo = document.getElementById('tarifInfo');
+      const tarifAmount = document.getElementById('tarifAmount');
+      
+      if (parcoursSelect) {
+        // Réinitialiser les options
+        parcoursSelect.innerHTML = '<option value="">-- Choisir un parcours --</option>';
+        
+        // Ajouter les formations en cours
+        formations.enCours.forEach(formation => {
+          const option = document.createElement('option');
+          option.value = formation.id;
+          option.textContent = formation.titre.replace(' - Formation en cours', '');
+          option.dataset.tarif = formation.tarifs;
+          
+          // Sélectionner automatiquement si c'est la formation choisie
+          if (selectedFormation === formation.id) {
+            option.selected = true;
+          }
+          
+          parcoursSelect.appendChild(option);
+        });
+        
+        // Afficher le tarif si une formation est sélectionnée
+        if (selectedFormation) {
+          const selectedOption = parcoursSelect.querySelector(`[value="${selectedFormation}"]`);
+          if (selectedOption) {
+            tarifAmount.textContent = selectedOption.dataset.tarif;
+            tarifInfo.style.display = 'block';
+          }
+        }
+      }
+    }
+
+    // Gestion de la connexion aux documents
+    function handleLogin(event) {
+      event.preventDefault();
+      
+      const email = document.getElementById('loginEmail').value;
+      const password = document.getElementById('loginPassword').value;
+      const messageDiv = document.getElementById('loginMessage');
+      
+      if (usersDatabase[email]) {
+        const user = usersDatabase[email];
+        
+        // Première connexion
+        if (user.password === null) {
+          user.password = password;
+          messageDiv.innerHTML = '<div class="success-message">Mot de passe créé avec succès ! Connexion en cours...</div>';
+          setTimeout(() => {
+            loginUser(user, email);
+          }, 1000);
+        }
+        // Connexion normale
+        else if (user.password === password) {
+          messageDiv.innerHTML = '<div class="success-message">Connexion réussie !</div>';
+          setTimeout(() => {
+            loginUser(user, email);
+          }, 500);
+        }
+        // Mot de passe incorrect
+        else {
+          messageDiv.innerHTML = '<div class="error-message">Mot de passe incorrect.</div>';
+        }
+      } else {
+        messageDiv.innerHTML = '<div class="error-message">Email non trouvé dans notre base d\'inscrits.</div>';
+      }
+    }
+
+    // Connexion utilisateur
+    function loginUser(user, email) {
+      currentUser = { ...user, email: email };
+      
+      // Masquer la zone de connexion
+      document.getElementById('loginArea').style.display = 'none';
+      
+      // Afficher la zone des documents
+      document.getElementById('documentsArea').style.display = 'block';
+      
+      // Mettre à jour les informations utilisateur
+      document.getElementById('userName').textContent = user.name;
+      document.getElementById('userFormation').textContent = user.formation;
+      
+      // Charger les documents
+      loadUserDocuments();
+    }
+
+    // Charger les documents de l'utilisateur
+    function loadUserDocuments() {
+      if (!currentUser) return;
+      
+      // Documents de formation
+      const formationDocsContainer = document.getElementById('formationDocuments');
+      if (currentUser.documents.formation.length > 0) {
+        formationDocsContainer.innerHTML = currentUser.documents.formation.map(doc => `
+          <div class="document-item">
+            <div>
+              <strong>${doc.name}</strong>
+              <small style="display:block;color:#6b7280;">${doc.type}</small>
+            </div>
+            <a href="${doc.url}" class="download-btn" download>Télécharger</a>
+          </div>
+        `).join('');
+      } else {
+        formationDocsContainer.innerHTML = '<p style="text-align:center;color:#6b7280;">Aucun document disponible pour le moment.</p>';
+      }
+      
+      // Certificats et attestations
+      const certificatesContainer = document.getElementById('certificates');
+      if (currentUser.documents.certificates.length > 0) {
+        certificatesContainer.innerHTML = currentUser.documents.certificates.map(cert => `
+          <div class="document-item">
+            <div>
+              <strong>${cert.name}</strong>
+              <small style="display:block;color:#6b7280;">${cert.type} - ${cert.status === 'available' ? '✅ Disponible' : '⏳ En préparation'}</small>
+            </div>
+            ${cert.status === 'available' 
+              ? `<a href="${cert.url}" class="download-btn" download>Télécharger</a>`
+              : '<span style="color:#6b7280;">Bientôt disponible</span>'
+            }
+          </div>
+        `).join('');
+      } else {
+        certificatesContainer.innerHTML = '<p style="text-align:center;color:#6b7280;">Aucun certificat disponible pour le moment.</p>';
+      }
+    }
+
+    // Déconnexion
+    function logout() {
+      currentUser = null;
+      
+      // Masquer la zone des documents
+      document.getElementById('documentsArea').style.display = 'none';
+      
+      // Afficher la zone de connexion
+      document.getElementById('loginArea').style.display = 'block';
+      
+      // Réinitialiser le formulaire
+      document.getElementById('loginForm').reset();
+      document.getElementById('loginMessage').innerHTML = '';
+    }
+
+    // Initialisation
+    document.addEventListener('DOMContentLoaded', function() {
+      // Initialiser les formations
+      const select = document.getElementById("typeFormation");
+      if (select) {
+        afficherFormations(select.value);
+        select.addEventListener("change", () => {
+          afficherFormations(select.value);
+        });
+      }
+
+      // Initialiser le formulaire d'inscription
+      updateInscriptionForm();
+      
+      // Gestion du changement de parcours dans l'inscription
+      const parcoursSelect = document.getElementById('parcoursSelect');
+      if (parcoursSelect) {
+        parcoursSelect.addEventListener('change', function() {
+          const tarifInfo = document.getElementById('tarifInfo');
+          const tarifAmount = document.getElementById('tarifAmount');
+          const selectedOption = this.options[this.selectedIndex];
+          
+          if (selectedOption.dataset.tarif) {
+            tarifAmount.textContent = selectedOption.dataset.tarif;
+            tarifInfo.style.display = 'block';
+          } else {
+            tarifInfo.style.display = 'none';
+          }
+        });
+      }
+
+      // Gestion de la connexion
+      const loginForm = document.getElementById('loginForm');
+      if (loginForm) {
+        loginForm.addEventListener('submit', handleLogin);
+      }
+
+      // Gestion du formulaire d'inscription
+      const inscriptionForm = document.getElementById('inscriptionForm');
+      if (inscriptionForm) {
+        inscriptionForm.addEventListener('submit', function(e) {
+          e.preventDefault();
+          
+          // Récupérer les données du formulaire
+          const formData = new FormData(e.target);
+          const data = Object.fromEntries(formData);
+          
+          // Simuler l'ajout à la base de données
+          const newUserEmail = data.email;
+          if (!usersDatabase[newUserEmail]) {
+            usersDatabase[newUserEmail] = {
+              name: data.nom,
+              password: null,
+              formation: formations.enCours.find(f => f.id === data.parcours)?.titre.replace(' - Formation en cours', '') || 'Formation sélectionnée',
+              status: 'pending',
+              documents: {
+                formation: [],
+                certificates: []
+              }
+            };
+          }
+          
+          alert('Merci pour votre candidature ! Nous vous contacterons dans les 48h pour finaliser votre inscription. Vous recevrez vos identifiants d\'accès aux documents après validation.');
+          e.target.reset();
+          document.getElementById('tarifInfo').style.display = 'none';
+          selectedFormation = null;
+        });
+      }
+    });
 
     // Slider automatique
     const slides = document.querySelector('.slides');
@@ -549,16 +1108,13 @@
       setInterval(showNextSlide, 6000);
     }
 
-    // Formulaire
-    const form = document.querySelector('form');
-    if (form) {
-      form.addEventListener('submit', e => {
-        e.preventDefault();
-        alert('Merci pour votre candidature ! Nous vous contacterons dans les 48h pour finaliser votre inscription.');
-        e.target.reset();
-      });
-    }
+    // Fermer le modal en cliquant à l'extérieur
+    window.addEventListener('click', function(event) {
+      const modal = document.getElementById('formationModal');
+      if (event.target === modal) {
+        closeModal();
+      }
+    });
   </script>
 </body>
 </html>
-
